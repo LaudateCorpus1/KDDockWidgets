@@ -30,6 +30,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QTimer>
 
 using namespace KDDockWidgets;
 
@@ -40,6 +41,7 @@ TitleBar::TitleBar(Frame *parent)
     , m_floatingWindow(nullptr)
 {
     connect(m_frame, &Frame::numDockWidgetsChanged, this, &TitleBar::updateCloseButton);
+    connect(m_frame, &Frame::isInMainWindowChanged, this, &TitleBar::updateMinimizeButton);
     init();
 }
 
@@ -58,6 +60,7 @@ void TitleBar::init()
 {
     qCDebug(creation) << "TitleBar" << this;
     setFixedHeight(30);
+    QTimer::singleShot(0, this, &TitleBar::updateMinimizeButton);
 }
 
 TitleBar::~TitleBar()
@@ -143,6 +146,12 @@ bool TitleBar::supportsFloatingButton() const
     return !m_floatingWindow || m_floatingWindow->hasSingleFrame();
 }
 
+bool TitleBar::supportsMinimizeButton() const
+{
+    // Only dock widgets docked into the MainWindow can minimize
+    return m_frame && m_frame->isInMainWindow();
+}
+
 bool TitleBar::hasIcon() const
 {
     return !m_icon.isNull();
@@ -221,4 +230,9 @@ void TitleBar::onFloatClicked()
     } else {
         makeWindow();
     }
+}
+
+void TitleBar::onMinimizeClicked()
+{
+
 }

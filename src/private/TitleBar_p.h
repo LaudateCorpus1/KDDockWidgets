@@ -68,6 +68,10 @@ public:
     ///@brief returns whether this title bar supports a floating/unfloating button
     bool supportsFloatingButton() const;
 
+    ///@brief returns whether this title bar supports a minimize button.
+    ///Will be true if it's docked into a main window
+    bool supportsMinimizeButton() const;
+
     ///@brief returns whether this title bar has an icon
     bool hasIcon() const;
 
@@ -90,8 +94,11 @@ Q_SIGNALS:
 protected:
     void onCloseClicked();
     void onFloatClicked();
+    void onMinimizeClicked();
+
     virtual void updateFloatButton() {}
     virtual void updateCloseButton() {}
+    virtual void updateMinimizeButton() {}
 
     // The following are needed for the unit-tests
     virtual bool isCloseButtonVisible() const { return true; }

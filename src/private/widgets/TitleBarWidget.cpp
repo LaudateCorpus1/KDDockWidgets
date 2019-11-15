@@ -29,6 +29,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMouseEvent>
+#include <QTimer>
 
 using namespace KDDockWidgets;
 
@@ -61,11 +62,15 @@ void TitleBarWidget::init()
     m_closeButton = new Button(this);
     m_floatButton = TitleBarWidget::createButton(this, style()->standardIcon(QStyle::SP_TitleBarNormalButton));
     m_closeButton = TitleBarWidget::createButton(this, style()->standardIcon(QStyle::SP_TitleBarCloseButton));
+    m_minimizeButton = TitleBarWidget::createButton(this, style()->standardIcon(QStyle::SP_TitleBarMinButton));
+
+    m_layout->addWidget(m_minimizeButton);
     m_layout->addWidget(m_floatButton);
     m_layout->addWidget(m_closeButton);
 
     connect(m_floatButton, &QAbstractButton::clicked, this, &TitleBarWidget::onFloatClicked);
     connect(m_closeButton, &QAbstractButton::clicked, this, &TitleBarWidget::onCloseClicked);
+    connect(m_minimizeButton, &QAbstractButton::clicked, this, &TitleBarWidget::onMinimizeClicked);
 
     updateCloseButton();
 
@@ -146,6 +151,11 @@ void TitleBarWidget::updateCloseButton()
 
     qCDebug(closebutton) << Q_FUNC_INFO << "enabled=" << !anyNonClosable;
     m_closeButton->setEnabled(!anyNonClosable);
+}
+
+void TitleBarWidget::updateMinimizeButton()
+{
+    m_minimizeButton->setVisible(supportsMinimizeButton());
 }
 
 bool TitleBarWidget::isCloseButtonVisible() const
