@@ -122,7 +122,7 @@ IndicatorWindow::IndicatorWindow(ClassicIndicators *classicIndicators_, QWidget 
     , m_outterBottom(new Indicator(classicIndicators, this, DropIndicatorOverlayInterface::DropLocation_OutterBottom))
     , m_outterTop(new Indicator(classicIndicators, this, DropIndicatorOverlayInterface::DropLocation_OutterTop))
 {
-    setWindowFlag(Qt::FramelessWindowHint, true);
+    setWindowFlags(windowFlags() | Qt::FramelessWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
     updatePosition();
 

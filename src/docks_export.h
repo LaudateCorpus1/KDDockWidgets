@@ -23,6 +23,27 @@
 
 #include <QtCore/QtGlobal>
 
+#if QT_VERSION < QT_VERSION_CHECK(5,7,0)
+#include <QFlags>
+#include <QDataStream>
+
+// this adds const to non-const objects (like std::as_const)
+template <typename T>
+Q_DECL_CONSTEXPR typename std::add_const<T>::type &qAsConst(T &t) Q_DECL_NOTHROW { return t; }
+// prevent rvalue arguments:
+template <typename T>
+void qAsConst(const T &&) Q_DECL_EQ_DELETE;
+
+template<class Enum>
+inline QDataStream &operator>>(QDataStream &ds, QFlags<Enum> &qenum)
+{
+	int i = 0;
+	ds >> i;
+	qenum = QFlags<Enum>(static_cast<Enum>(i));
+	return ds;
+}
+#endif
+
 #if defined(BUILDING_DOCKS_LIBRARY)
 #  define DOCKS_EXPORT Q_DECL_EXPORT
 #  if defined(DOCKS_DEVELOPER_MODE)

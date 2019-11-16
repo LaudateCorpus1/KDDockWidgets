@@ -31,7 +31,6 @@
 
 #include <QApplication>
 #include <QDebug>
-#include <QOperatingSystemVersion>
 
 using namespace KDDockWidgets;
 
@@ -157,10 +156,16 @@ QQmlEngine *Config::qmlEngine() const
     return d->m_qmlEngine;
 }
 
+#if defined(Q_OS_WIN)
+#include <Windows.h>
+#endif
+
 void Config::Private::fixFlags()
 {
 #if defined(Q_OS_WIN)
-    if (QOperatingSystemVersion::current().majorVersion() < 10) {
+#pragma warning(suppress: 4996)
+	auto majorVersion = (DWORD)(LOBYTE(LOWORD(GetVersion())));
+    if (majorVersion < 10) {
         // Aero-snap requires Windows 10
         m_flags = m_flags & ~Flag_AeroSnapWithClientDecos;
     }
